@@ -214,11 +214,8 @@ if "%1" == "lint" (
 )
 
 if "%1" == "check" (
-	call :run_lint
-	call :run_black
-	call :run_spelling
-	echo.
-	echo.All checks completed.
+	call :run_check
+	if errorlevel 1 exit /b 1
 	goto end
 )
 
@@ -230,16 +227,15 @@ if "%1" == "check" (
 	exit /b
 
 :run_spelling
-	%SPHINXBUILD% -b spelling %ALLSPHINXOPTS% %BUILDDIR%/spelling
+	%SPHINXBUILD% -b spelling %* %ALLSPHINXOPTS% %BUILDDIR%/spelling
 	if errorlevel 1 exit /b 1
 	echo.
 	echo.Check finished. Wrong words can be found in %BUILDDIR%/spelling/output.txt.
 	exit /b
 
 :run_black
-	for /f "usebackq tokens=*" %%i in (`dir *.txt /s /b ^| findstr /v /c:"_build" /c:"_ext" /c:"_static" /c:"_theme" /c:"requirements.txt"`) do (
-		blacken-docs --rst-literal-block %%i
-	)
+	python blacken-sources.py
+	if errorlevel 1 exit /b 1
 	echo.
 	echo.Code blocks reformatted
 	exit /b
@@ -249,5 +245,22 @@ if "%1" == "check" (
 	if errorlevel 1 exit /b 1
 	echo.
 	echo.Documentation lint complete.
+	exit /b
+
+:run_check
+	set CHECK_FAILED=
+	call :run_lint
+	if errorlevel 1 set CHECK_FAILED=1
+	call :run_black
+	if errorlevel 1 set CHECK_FAILED=1
+	call :run_spelling -q -W
+	if errorlevel 1 set CHECK_FAILED=1
+	echo.
+	if defined CHECK_FAILED (
+		echo.Some checks failed.
+		exit /b 1
+	)
+	echo.All style and spelling checks passed.
+	exit /b
 
 :end

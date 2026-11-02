@@ -40,7 +40,7 @@ import github_links  # NOQA
 # -- General configuration --
 
 # If your documentation needs a minimal Sphinx version, state it here.
-needs_sphinx = "7.3.0"
+needs_sphinx = "8.2.0"
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -169,8 +169,7 @@ locale_dirs = ["locale/"]
 today_fmt = "%B %d, %Y"
 
 # List of patterns, relative to source directory, that match files and
-# directories to ignore when looking for source files. If this changes, be sure
-# to update similar exclusions in Makefile, make.bat, and lint.py.
+# directories to ignore when looking for source files.
 exclude_patterns = ["_build", "_ext", "_static", "_theme", "requirements.txt"]
 
 # The reST default role (used for this markup: `text`) to use for all
@@ -437,7 +436,7 @@ epub_cover = ("", "epub-cover.html")
 # epub_post_files = []
 
 # A list of files that should not be packed into the epub file.
-epub_exclude_files = ["_static/console-tabs.css"]
+epub_exclude_files = [join("_static", "console-tabs.css")]
 
 # Empty, rather than defaulting to html_css_files, because its only entry is
 # the console-tabs.css excluded above. Any epub compatible addition to
